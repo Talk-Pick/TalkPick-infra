@@ -21,6 +21,9 @@ locals {
     target_port: 80,
     listener_port: 80
   }
+  ec2={
+    sg_name: "SG-ALLOW_SSH_HTTPS"
+  }
 }
 
 // VPC Module
@@ -47,9 +50,23 @@ module "nlb" {
   listener_port    = local.nlb.listener_port
 
   // from terraform-vpc
-  vpc_id         = module.terraform-vpc-aws.talkpick_vpc_id
-  public_subnet_ids = module.terraform-vpc-aws.talkpick_public_subnet_ids
+  vpc_id         = module.vpc.vpc_id
+  public_subnet_ids = module.vpc.public_subnet_ids
 
   // from terraform-ec2
-  ec2_private_ips = module.terraform-ec2.talkpick_private_ec2_private_ips
+  ec2_private_ips = module.ec2.ec2_private_ips
+}
+
+// EC2 Module 
+module "ec2" {
+  // refer ./terraform-ec2 module
+  source = "./terraform-ec2"
+  
+  // environments from locals
+  sg_name = local.ec2.sg_name
+
+  // from terraform-vpc
+  vpc_id = module.vpc.vpc_id
+  public_subnet_cidrs = module.vpc.public_subnet_ids
+  private_subnet_cidrs = module.vpc.private_subnet_ids
 }
