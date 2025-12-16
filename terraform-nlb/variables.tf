@@ -1,7 +1,7 @@
 variable "name_prefix" {
-  description = "Cash Cow default prefix"
+  description = "Talkpick default prefix"
   type        = string
-  default     = "ccw"
+  default     = "talkpick"
 }
 
 variable "nlb_name" {

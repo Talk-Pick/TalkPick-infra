@@ -1,3 +1,9 @@
+variable "name_prefix" {
+  description = "Talkpick default prefix"
+  type        = string
+  default     = "talkpick"
+}
+
 variable "vpc_cidr" {
   description = "CIDR block for the VPC"
   type        = string
@@ -19,10 +25,4 @@ variable "availability_zones" {
   description = "List of Availability Zones"
   type        = list(string)
   default     = []
-}
-
-variable "name_prefix" {
-  description = "Cash Cow default prefix"
-  type        = string
-  default     = "talkpick"
 }
