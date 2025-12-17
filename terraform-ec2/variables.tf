@@ -25,3 +25,7 @@ variable "sg_name" {
   description = "Security group name for ec2"
   type = string
 }
+
+variable "ec2_instance_profile" {
+  type = string
+}

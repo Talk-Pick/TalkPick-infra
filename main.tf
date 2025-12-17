@@ -21,6 +21,9 @@ locals {
     target_port: 80,
     listener_port: 80
   }
+  iam = {
+    ssm_instance_role_name = "talkpick-ec2-ssm-role"
+  }
   ec2={
     sg_name: "SG-ALLOW_SSH_HTTPS"
   }
@@ -66,6 +69,15 @@ module "nlb" {
   ec2_private_ips = module.ec2.ec2_private_ips
 }
 
+// SSM Module 
+module "ssm" {
+  // refer ./terraform-ssm module
+  source = "./terraform-ssm"
+  
+  // environments from locals
+  ssm_instance_role_name = local.iam.ssm_instance_role_name
+}
+
 // EC2 Module 
 module "ec2" {
   // refer ./terraform-ec2 module
@@ -78,6 +90,9 @@ module "ec2" {
   vpc_id = module.vpc.vpc_id
   public_subnets_cidr = module.vpc.public_subnets_cidr
   private_subnet_ids  = module.vpc.private_subnet_ids
+
+  // from terraform-ssm
+  ec2_instance_profile    = module.ssm.instance_profile_name
 }
 
 // S3 Module
