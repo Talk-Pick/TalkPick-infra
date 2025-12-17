@@ -7,7 +7,7 @@ AWS 기반 인프라를 모듈 단위로 분리하여 관리하기 위한 Terraf
 ### 🏛️ AWS Cloud InfraStructure 
 > 런타임 인프라 구조
 <div align="center">
-  <img width="929" height="507" alt="스크린샷 2025-12-16 오후 2 33 39" src="https://github.com/user-attachments/assets/dceed76e-00ef-4167-bd08-b7c2c71db50d" />
+  <img width="771" height="444" alt="스크린샷 2025-12-17 오전 2 26 41" src="https://github.com/user-attachments/assets/4b8e930a-0871-4c70-b7e8-20c19cf9b7d5" />
 </div>
 
 ### CICD InfraStructure
