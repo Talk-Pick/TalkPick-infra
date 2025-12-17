@@ -13,3 +13,7 @@ output "private_subnet_ids" {
 output "private_route_table_ids" {
   value = aws_route_table.talkpick_private_rt[*].id
 }
+
+output "public_subnets_cidr" {
+  value = aws_subnet.talkpick_public_sn[*].cidr_block
+}

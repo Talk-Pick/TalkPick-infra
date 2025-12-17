@@ -24,6 +24,10 @@ locals {
   ec2={
     sg_name: "SG-ALLOW_SSH_HTTPS"
   }
+  s3 = {
+    name : "talkpick-static-assets-1"
+    region: "ap-northeast-2"
+  }
 }
 
 // VPC Module
@@ -67,6 +71,20 @@ module "ec2" {
 
   // from terraform-vpc
   vpc_id = module.vpc.vpc_id
-  public_subnet_cidrs = module.vpc.public_subnet_ids
-  private_subnet_cidrs = module.vpc.private_subnet_ids
+  public_subnets_cidr = module.vpc.public_subnets_cidr
+  private_subnet_ids  = module.vpc.private_subnet_ids
+}
+
+// S3 Module
+module "s3" {
+  // refer ./terraform-s3 module
+  source = "./terraform-s3"
+
+  // environments from locals
+  bucket_name    = local.s3.name
+  region         = local.s3.region
+
+  // from terraform-vpc   
+  vpc_id         = module.vpc.vpc_id
+  private_rt_ids = module.vpc.private_route_table_ids
 }

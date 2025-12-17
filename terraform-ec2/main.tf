@@ -9,15 +9,15 @@ resource "aws_security_group" "talkpick_ec2_sg" {
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
-    cidr_blocks = var.public_subnet_cidrs
+    cidr_blocks = var.public_subnets_cidr
   }
 
-  # HTTPS from NLB only (필요 시)
+  # HTTPS from NLB only
   ingress {
     from_port       = 443
     to_port         = 443
     protocol        = "tcp"
-    cidr_blocks = var.public_subnet_cidrs
+    cidr_blocks = var.public_subnets_cidr
   }
 
   # outbound allow
@@ -36,12 +36,12 @@ resource "aws_security_group" "talkpick_ec2_sg" {
 // EC2 In Private Subnets
 resource "aws_instance" "talkpick_private_ec2" {
   // loop
-  count = length(var.private_subnet_cidrs)
+  count = length(var.private_subnet_ids)
 
   // config for ec2
   ami           = "ami-068c0051b15cdb816"
   instance_type = "t3.micro"
-  subnet_id     = var.private_subnet_cidrs[count.index] // vpc subnet id 
+  subnet_id     = var.private_subnet_ids[count.index] // vpc subnet id 
   
   // security group 
   security_groups = [aws_security_group.talkpick_ec2_sg.id]
