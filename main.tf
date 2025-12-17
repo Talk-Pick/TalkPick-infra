@@ -28,6 +28,11 @@ locals {
     name : "talkpick-static-assets-1"
     region: "ap-northeast-2"
   }
+  rds={
+    db_name: "talkpick_db"
+    db_port: 3306
+    instance_class: "db.t3.micro"
+  }
 }
 
 // VPC Module
@@ -87,4 +92,27 @@ module "s3" {
   // from terraform-vpc   
   vpc_id         = module.vpc.vpc_id
   private_rt_ids = module.vpc.private_route_table_ids
+}
+
+// RDS Module
+module "rds" {
+  // refer ./terraform-rds module
+  source = "./terraform-rds"
+
+  // environments from locals
+  vpc_cidr    = local.vpc.cidr
+  instance_class = local.rds.instance_class
+  db_name     = local.rds.db_name
+  db_port     = local.rds.db_port
+
+  // environtments from variable
+  db_username = var.db_username
+  db_password = var.db_password
+
+  // from terraform-vpc
+  vpc_id      = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnet_ids
+
+  // from terraform-ec2
+  ec2_security_group_id = module.ec2.ec2_security_group_id
 }
