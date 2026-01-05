@@ -7,11 +7,11 @@ AWS 기반 인프라를 모듈 단위로 분리하여 관리하기 위한 Terraf
 ### 🏛️ AWS Cloud InfraStructure 
 > 런타임 인프라 구조
 <div align="center">
-  <img src="./images/talkpick-Runtime-Architecture.png" width="1100" />
+  <img width="988" height="695" alt="talkpick-runtime-architecture" src="https://github.com/user-attachments/assets/6b447ab0-80bd-40a8-bffc-18d24aa03eb2" />
 </div>
 
 ### CICD InfraStructure
 > CICD 인프라 구조
 <div align="center">
-  <img src="./images/talkpick-CICD-Architecture.png" width="700" />
+  <img width="951" height="662" alt="talkpick-cicd-architecture" src="https://github.com/user-attachments/assets/d5fae848-3ac8-464a-be81-e04495fc6a83" />
 </div>
