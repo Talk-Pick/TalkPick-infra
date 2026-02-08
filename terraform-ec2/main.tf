@@ -17,10 +17,22 @@ resource "aws_iam_role" "talkpick_iam_role" {
   })
 }
 
-// IAM Policy 
+// Sysmtem Manager enable
+resource "aws_ssm_service_setting" "default_host_management" {
+  setting_id    = "arn:aws:ssm:${var.aws_region}:${var.aws_account_id}:servicesetting/ssm/managed-instance/default-ec2-instance-management-role"
+  setting_value = aws_iam_role.talkpick_iam_role.name
+}
+
+// IAM Policy for S3
 resource "aws_iam_role_policy_attachment" "talkpick_s3_policy" {
   role       = aws_iam_role.talkpick_iam_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
+
+// IAM Policy for SSM
+resource "aws_iam_role_policy_attachment" "talkpick_ssm_policy" {
+  role       = aws_iam_role.talkpick_iam_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 // IAM Profile

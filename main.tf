@@ -26,6 +26,7 @@ locals {
   }
   ec2={
     sg_name: "SG-ALLOW_SSH_HTTPS"
+    region: "ap-northeast-2"
   }
   s3 = {
     name : "talkpick-static-assets-1"
@@ -37,6 +38,8 @@ locals {
     instance_class: "db.t3.micro"
   }
 }
+
+data "aws_caller_identity" "current" {}
 
 // VPC Module
 module "vpc" {
@@ -81,6 +84,8 @@ module "ec2" {
   vpc_id = module.vpc.vpc_id
   public_subnets_cidr = module.vpc.public_subnets_cidr
   private_subnet_ids  = module.vpc.private_subnet_ids
+  aws_region = local.ec2.region
+  aws_account_id  = data.aws_caller_identity.current.account_id
 }
 
 // S3 Module

@@ -9,6 +9,16 @@ variable "vpc_id" {
   type = string
 }
 
+variable "aws_region" {
+  description = "AWS Region"
+  type = string
+}
+
+variable "aws_account_id" {
+  description  = "AWS Account ID"
+  type = string
+}
+
 variable "private_subnet_ids" {
   description = "VPC Private Subnets ID"
   type        = list(string)
