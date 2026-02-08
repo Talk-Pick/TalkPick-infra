@@ -21,9 +21,6 @@ locals {
     target_port: 80,
     listener_port: 80
   }
-  iam = {
-    ssm_instance_role_name = "talkpick-ec2-ssm-role"
-  }
   ec2={
     sg_name: "SG-ALLOW_SSH_HTTPS"
     region: "ap-northeast-2"
@@ -51,6 +48,11 @@ module "vpc" {
   public_subnet_cidrs = local.vpc.public_cidrs
   private_subnet_cidrs = local.vpc.private_cidrs
   availability_zones = local.vpc.availability_zones
+}
+
+// IAM Module
+module "iam" {
+  source = "./terraform-iam"
 }
 
 // NLB Module
