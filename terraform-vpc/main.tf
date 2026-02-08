@@ -8,7 +8,7 @@ resource "aws_vpc" "talkpick_vpc" {
   }
 }
 
-// VPC IGW(Internet Gateway)
+// VPC IGW
 resource "aws_internet_gateway" "talkpick_igw" {
   vpc_id = aws_vpc.talkpick_vpc.id  // get vpc id
 
@@ -16,6 +16,36 @@ resource "aws_internet_gateway" "talkpick_igw" {
     Name = "${var.name_prefix}-igw"
   }
 }
+
+// VPC NAT EIP
+resource "aws_eip" "talkpick_nat_eip" {
+  // loop
+  count  = length(var.private_subnet_cidrs)
+
+  // config for eip
+  domain = "vpc"
+
+  tags = {
+    Name = "${var.name_prefix}-nat-eip-${count.index + 1}"
+  }
+}
+
+// VPC NAT GW
+resource "aws_nat_gateway" "talkpick_nat_gw" {
+  // loop
+  count         = length(var.private_subnet_cidrs)
+
+  // config for nat gateway
+  allocation_id = aws_eip.talkpick_nat_eip[count.index].id
+  subnet_id     = aws_subnet.talkpick_public_sn[count.index].id
+
+  tags = {
+    Name = "${var.name_prefix}-nat-gw-${count.index + 1}"
+  }
+
+  depends_on = [aws_internet_gateway.talkpick_igw]
+}
+
 
 // Public Subnet
 resource "aws_subnet" "talkpick_public_sn" {
@@ -47,7 +77,7 @@ resource "aws_subnet" "talkpick_private_sn" {
   }
 }
 
-// VPC Public RT(Routing Table)
+// VPC Public RT
 resource "aws_route_table" "talkpick_public_rt" {
   vpc_id = aws_vpc.talkpick_vpc.id  // get vpc id
 
@@ -72,12 +102,18 @@ resource "aws_route_table_association" "talkpick_public_rt_association" {
   route_table_id = aws_route_table.talkpick_public_rt.id
 }
 
-// VPC Private RT(Routing Table)
+// VPC Private RT
 resource "aws_route_table" "talkpick_private_rt" {
   // loop
   count  = length(var.private_subnet_cidrs)
 
   vpc_id = aws_vpc.talkpick_vpc.id  // get vpc id
+
+  // config for private rt
+  route {
+    cidr_block     = "0.0.0.0/0"  // default routing to nat gateway
+    nat_gateway_id = aws_nat_gateway.talkpick_nat_gw[count.index].id
+  }
 
   tags = {
     Name = "${var.name_prefix}-private-rt-${count.index + 1}"
