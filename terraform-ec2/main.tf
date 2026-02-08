@@ -1,3 +1,35 @@
+// EC2 IAM role
+resource "aws_iam_role" "talkpick_iam_role" {
+  name = "${var.name_prefix}-ec2-s3-role"
+
+  // allow to access s3
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+// IAM Policy 
+resource "aws_iam_role_policy_attachment" "talkpick_s3_policy" {
+  role       = aws_iam_role.talkpick_iam_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
+
+// IAM Profile
+resource "aws_iam_instance_profile" "talkpick_s3_profile" {
+  name = "${var.name_prefix}-ec2-s3-profile"
+  role = aws_iam_role.talkpick_iam_role.name
+}
+
+
 // EC2 Security Group
 resource "aws_security_group" "talkpick_ec2_sg" {
   name        = "${var.name_prefix}-ec2-sg"
@@ -67,6 +99,9 @@ resource "aws_instance" "talkpick_private_ec2" {
   instance_type = "t3.micro"
 
   subnet_id = var.private_subnet_ids[0]  # AZ-a
+
+  // IAM profile
+  iam_instance_profile = aws_iam_instance_profile.talkpick_s3_profile.name
   
   // security group 
   vpc_security_group_ids = [
